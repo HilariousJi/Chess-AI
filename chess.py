@@ -32,8 +32,8 @@ class Board:
     BLANK = "- "
 
     def __init__(self):
-        self.board = [[Board.BLANK for i in range(
-            8)] for j in range(8)]    # board content
+        self.board = [[Board.BLANK for i in range(8)]
+                      for j in range(8)]  # board content
         self.load_default()
 
     def load_default(self):
@@ -80,9 +80,22 @@ class Board:
     def get_pieces(self):
         """get current pieces on board"""
         total = {
-            Color.WHITE: {Piece.KING: [], Piece.QUEEN: [], Piece.BISHOP: [], Piece.KNIGHT: [], Piece.ROOK: [], Piece.PAWN: []},
-            Color.BLACK: {Piece.KING: [], Piece.QUEEN: [], Piece.BISHOP: [
-            ], Piece.KNIGHT: [], Piece.ROOK: [], Piece.PAWN: []}
+            Color.WHITE: {
+                Piece.KING: [],
+                Piece.QUEEN: [],
+                Piece.BISHOP: [],
+                Piece.KNIGHT: [],
+                Piece.ROOK: [],
+                Piece.PAWN: []
+            },
+            Color.BLACK: {
+                Piece.KING: [],
+                Piece.QUEEN: [],
+                Piece.BISHOP: [],
+                Piece.KNIGHT: [],
+                Piece.ROOK: [],
+                Piece.PAWN: []
+            }
         }
         # pieces = {Piece.KING: [], Piece.QUEEN: [], Piece.BISHOP: [], Piece.KNIGHT: [], Piece.ROOK: [], Piece.PAWN: []}
         for i in range(8):
@@ -146,22 +159,22 @@ def white_pawn_successors(piece, pos, game, result):
     i, j = pos
     if i < 7:
         # move forward one step
-        p = board[i+1][j]
+        p = board[i + 1][j]
         if type(p) is not Piece:
             new_game = deepcopy(game)
             new_game.board.board[i][j] = Board.BLANK
-            new_game.board.board[i+1][j] = piece
-            result.append([[pos, (i+1, j)], new_game])
+            new_game.board.board[i + 1][j] = piece
+            result.append([[pos, (i + 1, j)], new_game])
     if i == 2:
         # move forward two step
-        p = board[i+2][j]
+        p = board[i + 2][j]
         if type(p) is not Piece:
             new_game = deepcopy(game)
             new_game.board.board[i][j] = Board.BLANK
-            new_game.board.board[i+2][j] = piece
-            result.append([[pos, (i+2, j)], new_game])
+            new_game.board.board[i + 2][j] = piece
+            result.append([[pos, (i + 2, j)], new_game])
     # try eat
-    for n_pos in [(i+1, j-1), (i+1, j+1)]:
+    for n_pos in [(i + 1, j - 1), (i + 1, j + 1)]:
         if not ok_p(n_pos):
             continue
         pi, pj = n_pos
@@ -189,7 +202,7 @@ def black_pawn_successors(piece, pos, game, result):
             new_game = deepcopy(game)
             new_game.board.board[i][j] = Board.BLANK
             new_game.board.board[i - 1][j] = piece
-            result.append([[pos, (i-1, j)], new_game])
+            result.append([[pos, (i - 1, j)], new_game])
     if i == 6:
         # move forward two step
         p = board[i - 2][j]
@@ -197,7 +210,7 @@ def black_pawn_successors(piece, pos, game, result):
             new_game = deepcopy(game)
             new_game.board.board[i][j] = Board.BLANK
             new_game.board.board[i - 2][j] = piece
-            result.append([[pos, (i-2, j)], new_game])
+            result.append([[pos, (i - 2, j)], new_game])
     # try eat
     for n_pos in [(i - 1, j - 1), (i - 1, j + 1)]:
         if not ok_p(n_pos):
@@ -218,8 +231,9 @@ def knight_successors(pieces, game):
     result = []
     for (p, pos) in pieces:
         i, j = pos
-        next_pos = [(i+2, j+1), (i+1, j+2), (i-2, j-1), (i-1, j-2),
-                    (i-2, j+1), (i-1, j+2), (i+2, j-1), (i+1, j-2)]
+        next_pos = [(i + 2, j + 1), (i + 1, j + 2), (i - 2, j - 1),
+                    (i - 1, j - 2), (i - 2, j + 1), (i - 1, j + 2),
+                    (i + 2, j - 1), (i + 1, j - 2)]
         next_pos = [p for p in next_pos if ok_p(p)]
         insert_possible(next_pos, pos, p, game, result, stop=False)
     return result
@@ -271,7 +285,7 @@ def bishop_successors(pieces, game):
     result = []
     for (p, pos) in pieces:
         i, j = pos
-        next_pos = [(i+k, j+k) for k in range(1, 8)]
+        next_pos = [(i + k, j + k) for k in range(1, 8)]
         next_pos = [p for p in next_pos if ok_p(p)]
         insert_possible(next_pos, pos, p, game, result)
 
@@ -295,13 +309,13 @@ def rook_successors(pieces, game):
     result = []
     for (p, pos) in pieces:
         i, j = pos
-        next_pos = [(d, j) for d in range(i+1, 8)]
+        next_pos = [(d, j) for d in range(i + 1, 8)]
         insert_possible(next_pos, pos, p, game, result)
 
         next_pos = [(d, j) for d in range(0, i)][::-1]
         insert_possible(next_pos, pos, p, game, result)
 
-        next_pos = [(i, d) for d in range(j+1, 8)]
+        next_pos = [(i, d) for d in range(j + 1, 8)]
         insert_possible(next_pos, pos, p, game, result)
 
         next_pos = [(i, d) for d in range(0, j)][::-1]
@@ -358,12 +372,11 @@ def score(pieces):
     s += 50 * len(pieces[Piece.ROOK])
     s += 40 * len(pieces[Piece.BISHOP])
     s += 160 * len(pieces[Piece.QUEEN])
-    s += 10000*len(pieces[Piece.KING])
+    s += 10000 * len(pieces[Piece.KING])
     return s
 
 
 class Game:
-
     def __init__(self, board, current_player):
         self.board = board
         self.current_player = current_player
@@ -380,7 +393,6 @@ class Game:
 
 
 class BasePlayer:
-
     def __init__(self, color):
         self.color = color
 
@@ -389,7 +401,6 @@ class BasePlayer:
 
 
 class MinimaxPlayer(BasePlayer):
-
     def __init__(self, color, depth):
         super().__init__(color)
         self.player = color
@@ -402,7 +413,7 @@ class MinimaxPlayer(BasePlayer):
         beta = INF
         best_action = None
         for (move, next_state) in successors(game):
-            v = self.min_value(next_state, best_score, beta, depth-1)
+            v = self.min_value(next_state, best_score, beta, depth - 1)
             if v > best_score:
                 best_score = v
                 best_action = move
@@ -413,7 +424,7 @@ class MinimaxPlayer(BasePlayer):
             return evaluate(game, self.player)
         v = -INF
         for (move, next_state) in successors(game):
-            v = max(v, self.min_value(next_state, alpha, beta, depth-1))
+            v = max(v, self.min_value(next_state, alpha, beta, depth - 1))
             if v >= beta:
                 return v
             alpha = max(alpha, v)
@@ -424,7 +435,7 @@ class MinimaxPlayer(BasePlayer):
             return evaluate(game, self.player)
         v = INF
         for (move, next_state) in successors(game):
-            v = min(v, self.max_value(next_state, alpha, beta, depth-1))
+            v = min(v, self.max_value(next_state, alpha, beta, depth - 1))
             if v <= alpha:
                 return v
             beta = min(beta, v)
@@ -433,24 +444,23 @@ class MinimaxPlayer(BasePlayer):
 
 def to_pos(p):
     col, row = p[0], p[1]
-    return (int(row)-1, "abcdefgh".index(col))
+    return (int(row) - 1, "abcdefgh".index(col))
 
 
 class HumanPlayer(BasePlayer):
-
     def get_move(self, board):
         move = input("input your move (pos,pos, eg, a7,a6):")
         p1, p2 = move.split(",")
-        return to_pos(p1), to_pos(p2)       # trans to array index
+        return to_pos(p1), to_pos(p2)  # trans to array index
 
 
 def run():
     depth = 4  # control depth of search tree
     current_player = Color.WHITE
     game = Game(Board(), current_player)
-    white_player = MinimaxPlayer(Color.WHITE, depth)     # ai player
+    white_player = MinimaxPlayer(Color.WHITE, depth)  # ai player
     #black_player = MinimaxPlayer(Color.BLACK, depth)
-    black_player = HumanPlayer(Color.BLACK)       # human input player
+    black_player = HumanPlayer(Color.BLACK)  # human input player
     while not game.over():
         # game turn
         if game.current_player == Color.WHITE:
